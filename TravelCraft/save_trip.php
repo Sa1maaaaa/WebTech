@@ -40,6 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ]);
 
     $_SESSION['success_message'] = 'Deine Reise wurde erfolgreich gespeichert.';
-header('Location: my_trips.php');
+header('Location: my_trips.php');}
 exit;
 ?>

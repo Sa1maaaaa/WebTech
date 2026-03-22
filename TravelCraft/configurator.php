@@ -169,7 +169,7 @@ $cityData = $cityData = [
 ];
 
 $accommodations = [
-    'Hotel' => 80, 'Villa' => 250, 'Hostel' => 45, 'Camping-Van' => 50, 'Ferien-Wohnung' => 120
+    'Hotel' => 80, 'Villa' => 250, 'Hostel' => 45, 'Camping-Van' => 50, 'Ferienwohnung' => 120
 ];
 
 $transports = [
@@ -186,7 +186,7 @@ $extras = [
     'Pool' => 40, 'Sauna' => 25, 'Außendusche' => 15, 
     'Privatsphäre (keine Nachbarn)' => 60, 'Sichtschutz' => 35, 'Babybett' => 20, 
     'barrierefrei' => 30, 'All-Inclusive' => 80, 'Vegan' => 15, 'Vegetarisch' => 10,
-    'freie Getränke' => 20, 'Early Chek-In' => 23, 'Late Check-Out' => 23
+    'freie Getränke' => 20, 'Early Check-In' => 23, 'Late Check-Out' => 23
 ];
 
 include 'includes/header.php';
@@ -277,17 +277,10 @@ include 'includes/header.php';
                     </div>
 
                     <h4 class="text-primary mb-4 fw-bold"><i class="bi bi-plus-circle"></i> 3. Extras</h4>
-                    <div class="row g-2 mb-4">
-                        <?php foreach ($extras as $name => $price): ?>
-                            <div class="col-md-6">
-                                <input type="checkbox" class="btn-check extra-checkbox" name="extras[]" value="<?= $name ?>" data-price="<?= $price ?>" id="ex_<?= md5($name) ?>" autocomplete="off">
-                                <label class="btn btn-outline-secondary w-100 text-start p-2 d-flex justify-content-between align-items-center rounded-3" for="ex_<?= md5($name) ?>">
-                                    <span><?= $name ?></span>
-                                    <small class="fw-bold">+<?= $price ?> €</small>
-                                </label>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
+                    <div id="extras-container" class="row g-2 mb-4">
+                    <div class="col-12 text-muted">Bitte wähle zuerst Ziel, Region und Unterkunft.</div>
+                </div>
+
 
                     <div class="row mb-4 align-items-end">
                         <div class="col-md-6">
@@ -360,182 +353,10 @@ include 'includes/header.php';
 </div>
 
 <script>
-// 1. VARIABLEN DEFINIEREN
-const destSelect = document.getElementById('destination');
-const citySelect = document.getElementById('city');
-const quarterSelect = document.getElementById('quarter');
-const searchInput = document.getElementById('destination_search');
-const accSelect = document.getElementById('accommodation');
-const transSelect = document.getElementById('transport');
-const daysInput = document.getElementById('travel_days');
-const couponInput = document.getElementById('coupon_code');
-const travelInput = document.getElementById('travel_start');
-
-// Daten von PHP übernehmen
-const cityData = <?php echo json_encode($cityData); ?>;
-const allDestinations = <?php echo json_encode($destinations); ?>;
-
-// 2. FUNKTION: BERECHNUNG & VORSCHAU
-function updateAll() {
-    const selectedCountryOpt = destSelect.options[destSelect.selectedIndex];
-    if (!selectedCountryOpt || selectedCountryOpt.value === "") {
-        document.getElementById('res-price').innerText = "0,00 €";
-        return;
-    }
-
-    // 1. FAKTOREN HOLEN
-    const countryFactor = parseFloat(selectedCountryOpt.dataset.factor || 1);
-    const selectedCityOpt = citySelect.selectedOptions[0];
-    const cityFactor = parseFloat(selectedCityOpt?.dataset.factor || 1); // Stadt-Faktor
-    
-    const climateVal = document.querySelector('.climate-radio:checked').value;
-    let seasonFactor = 1.0;
-    if (climateVal === 'warm') seasonFactor = 1.25;
-    if (climateVal === 'flexible') seasonFactor = 1.1;
-
-    // 2. BASISPREISE HOLEN
-    const basePriceAcc = parseFloat(accSelect.selectedOptions[0]?.dataset.price || 0);
-    const basePriceTrans = parseFloat(transSelect.selectedOptions[0]?.dataset.price || 0);
-    const days = parseInt(daysInput.value) || 1;
-
-    // 3. EINZELBERECHNUNG (inkl. aller Faktoren)
-    // Formel: Basis * Land * Stadt * Saison
-    const finalPriceTrans = basePriceTrans * countryFactor * cityFactor * seasonFactor;
-    const finalPriceAcc = (basePriceAcc * days) * countryFactor * cityFactor * seasonFactor;
-
-    let total = finalPriceTrans + finalPriceAcc;
-
-    // 4. EXTRAS ADDIEREN
-    const iconArea = document.getElementById('extra-badges');
-    iconArea.innerHTML = '';
-    let hasExtras = false;
-    document.querySelectorAll('.extra-checkbox:checked').forEach(cb => {
-        hasExtras = true;
-        total += parseFloat(cb.dataset.price);
-        iconArea.innerHTML += `<span class="badge bg-primary-subtle text-primary border border-primary-subtle small me-1">${cb.value}</span>`;
-    });
-    if(!hasExtras) iconArea.innerHTML = '<small class="text-muted italic">Noch keine Extras gewählt</small>';
-
-    // 5. GUTSCHEIN
-    if (couponInput.value.toUpperCase() === 'SUMMER10') total *= 0.9;
-
-    // 6. UI UPDATES RECHTS
-    document.getElementById('res-dest').innerText = destSelect.value || "-";
-    document.getElementById('res-city').innerText = citySelect.value || "-";
-    
-    // Einzelpreise in der Aufschlüsselung
-    if(document.getElementById('res-price-trans')) document.getElementById('res-price-trans').innerText = finalPriceTrans.toFixed(2).replace('.', ',') + " €";
-    if(document.getElementById('res-price-acc')) document.getElementById('res-price-acc').innerText = finalPriceAcc.toFixed(2).replace('.', ',') + " €";
-
-    document.getElementById('res-vibe').innerText = climateVal === 'warm' ? '☀️ Sommer' : (climateVal === 'cold' ? '❄️ Winter' : '📅 Flexibel');
-    document.getElementById('res-price').innerText = total.toFixed(2).replace('.', ',') + " €";
-    document.getElementById('total_price_input').value = total.toFixed(2);
-}
-
-// 3. FUNKTION: STÄDTE LADEN
-function updateCities() {
-    const country = destSelect.value;
-    citySelect.innerHTML = '<option value="" data-factor="1">-- Stadt wählen --</option>';
-    
-    if (cityData[country]) {
-        citySelect.disabled = false;
-        Object.entries(cityData[country]).forEach(([cityName, cityFactor]) => {
-            const opt = document.createElement('option');
-            opt.value = cityName;
-            opt.text = cityName;
-            opt.dataset.factor = cityFactor;
-            citySelect.appendChild(opt);
-        });
-        // Automatisch die erste Stadt wählen für sofortigen Preis
-        if(citySelect.options.length > 1) citySelect.selectedIndex = 1;
-    } else {
-        citySelect.disabled = true;
-    }
-    updateAll();
-}
-
-// 4. FUNKTION: SAISON & QUARTAL
-function updateSeason() {
-    const climateVal = document.querySelector('.climate-radio:checked').value;
-    const country = destSelect.value;
-    
-    if (climateVal === 'flexible') {
-        quarterSelect.disabled = false;
-        quarterSelect.innerHTML = '<option value="Q1">Q1 (Jan-Mär)</option><option value="Q2">Q2 (Apr-Jun)</option><option value="Q3">Q3 (Jul-Sep)</option><option value="Q4">Q4 (Okt-Dez)</option>';
-    } else {
-        const isWarm = document.getElementById('climate_warm').checked;
-        const isSouthern = country === 'Mauritius' || country === 'Südafrika' || country === 'Australien';
-        
-        quarterSelect.innerHTML = '';
-        const qs = [
-            {val: 'Q1', txt: 'Q1 (Jan-Mär)', summer: false},
-            {val: 'Q2', txt: 'Q2 (Apr-Jun)', summer: true},
-            {val: 'Q3', txt: 'Q3 (Jul-Sep)', summer: true},
-            {val: 'Q4', txt: 'Q4 (Okt-Dez)', summer: false}
-        ];
-
-        qs.forEach(item => {
-            let isSummer = isSouthern ? !item.summer : item.summer;
-            if ((isWarm && isSummer) || (!isWarm && !isSummer)) {
-                const opt = document.createElement('option');
-                opt.value = item.val; opt.textContent = item.txt;
-                quarterSelect.appendChild(opt);
-            }
-        });
-
-        const year = new Date().getFullYear();
-        const qStarts = {'Q1':'-01-01','Q2':'-04-01','Q3':'-07-01','Q4':'-10-01'};
-        if (qStarts[quarterSelect.value]) travelInput.value = year + qStarts[quarterSelect.value];
-    }
-    updateAll();
-}
-
-// 5. FUNKTION: SUCHE
-searchInput.addEventListener('input', function() {
-    const term = this.value.toLowerCase().trim();
-    destSelect.innerHTML = '<option value="">-- Ziel wählen --</option>';
-    
-    let matches = 0;
-    let lastMatch = "";
-
-    Object.keys(allDestinations).forEach(country => {
-        if (country.toLowerCase().includes(term)) {
-            const opt = document.createElement('option');
-            opt.value = country;
-            opt.text = country;
-            opt.dataset.factor = allDestinations[country];
-            destSelect.appendChild(opt);
-            matches++;
-            lastMatch = country;
-        }
-    });
-
-    if (matches === 1 && term.length >= 2) {
-        destSelect.value = lastMatch;
-        this.classList.add('is-valid');
-        updateCities(); 
-        updateSeason();
-    } else {
-        this.classList.remove('is-valid');
-    }
-});
-
-// 6. EVENT-LISTENER
-destSelect.addEventListener('change', () => { updateCities(); updateSeason(); });
-citySelect.addEventListener('change', updateAll);
-travelInput.addEventListener('input', updateAll);
-
-[accSelect, transSelect, daysInput, couponInput, quarterSelect].forEach(el => {
-    el.addEventListener('change', updateAll);
-});
-
-document.querySelectorAll('.climate-radio').forEach(r => {
-    r.addEventListener('change', updateSeason);
-});
-
-document.querySelectorAll('.extra-checkbox').forEach(cb => {
-    cb.addEventListener('change', updateAll);
-});
-
-window.onload = () => { updateSeason(); };
+    const cityData = <?php echo json_encode($cityData); ?>;
+    const allDestinations = <?php echo json_encode($destinations); ?>;
 </script>
+
+
+// NIMMT DATEN AUS Configurator.js
+<script src="assets/js/configurator.js"></script>
