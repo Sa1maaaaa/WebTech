@@ -36,16 +36,13 @@ $isLoggedIn = isset($_SESSION['user_id']);
                 </li>
 
                 <?php if ($isLoggedIn): ?>
-    <li class="nav-item">
-        <span class="nav-link text-white">Hallo, <?= htmlspecialchars($_SESSION['user_name'] ?? 'User') ?></span>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link <?= $currentPage === 'my_trips.php' ? 'active' : '' ?>" href="my_trips.php">Meine Reisen</a>
-    </li>
-    <li class="nav-item ms-lg-2">
-        <a class="btn btn-light btn-sm" href="logout.php">Logout</a>
-    </li>
-<?php else: ?>
+                    <li class="nav-item">
+                        <a class="nav-link <?= $currentPage === 'my_trips.php' ? 'active' : '' ?>" href="my_trips.php">Meine Reisen</a>
+                    </li>
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-light btn-sm" href="logout.php">Logout</a>
+                    </li>
+                <?php else: ?>
                     <li class="nav-item">
                         <a class="nav-link <?= $currentPage === 'login.php' ? 'active' : '' ?>" href="login.php">Login</a>
                     </li>
