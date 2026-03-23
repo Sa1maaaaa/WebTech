@@ -137,143 +137,80 @@ body {
     .hero-image {
         height: 300px;
     }
-}body {
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #f8f9fa;
-    color: #1f2937;
 }
 
-.travel-navbar {
-    background: linear-gradient(90deg, #0f172a, #1d4ed8);
-}
+/* --- 3D hero model fly-in/out styles --- */
 
-.navbar-brand {
-    font-size: 1.4rem;
-}
-
-.nav-link.active {
-    font-weight: 700;
-}
-
-.hero-section {
-    background: linear-gradient(135deg, #0f172a, #1e3a8a, #2563eb);
-    color: #ffffff;
-    padding: 80px 0;
-}
-
-.hero-badge {
-    display: inline-block;
-    background-color: rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-    padding: 8px 14px;
-    border-radius: 999px;
-    font-size: 0.95rem;
-}
-
-.hero-title {
-    font-size: 2.8rem;
-    font-weight: 800;
-    line-height: 1.2;
-}
-
-.hero-text {
-    font-size: 1.1rem;
-    max-width: 600px;
-    color: #e5e7eb;
+.hero-media {
+    position: relative;
+    overflow: hidden;
+    min-height: 420px;
 }
 
 .hero-image {
-    border-radius: 22px;
-    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
     width: 100%;
-    height: 420px;
-    object-fit: cover;
+    border-radius: 20px;
+    display: block;
 }
 
-.section-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #111827;
+.hero-3d {
+    position: absolute;
+    /* start visually off-canvas to the left for the initial frame; animation will use transforms only */
+    left: 0; /* keep layout stable; animation handled by transform */
+    top: 0;
+    width: 220px;
+    height: 220px;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate3d(-260px, 170px, 0) rotate(-8deg) scale(0.7);
+    z-index: 5;
+    will-change: transform, opacity;
 }
 
-.section-subtitle {
-    color: #6b7280;
-    font-size: 1rem;
+.hero-3d.animate {
+    animation: planeFlyAcross 6s cubic-bezier(.2,.9,.2,1) forwards;
 }
 
-.feature-card {
-    background: #ffffff;
-    border-radius: 18px;
-    padding: 28px 22px;
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
-    transition: transform 0.2s ease;
-}
-
-.feature-card:hover {
-    transform: translateY(-5px);
-}
-
-.feature-number {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    background: #2563eb;
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    margin-bottom: 14px;
-}
-
-.destinations-section {
-    background-color: #eef4ff;
-}
-
-.destination-card {
-    background: #ffffff;
-    border-radius: 18px;
-    overflow: hidden;
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
-    height: 100%;
-}
-
-.destination-img {
-    width: 100%;
-    height: 240px;
-    object-fit: cover;
-}
-
-.destination-body {
-    padding: 20px;
-}
-
-.destination-body h5 {
-    font-weight: 700;
-    margin-bottom: 8px;
-}
-
-.travel-footer {
-    background-color: #0f172a;
-    color: #ffffff;
-}
-
-.btn-primary {
-    background-color: #2563eb;
-    border-color: #2563eb;
-}
-
-.btn-primary:hover {
-    background-color: #1d4ed8;
-    border-color: #1d4ed8;
-}
-
-@media (max-width: 768px) {
-    .hero-title {
-        font-size: 2rem;
+/* keyframes use transform only (no left/top) for better performance */
+@keyframes planeFlyAcross {
+    0% {
+        transform: translate3d(-260px, 170px, 0) scale(0.7) rotate(-12deg);
+        opacity: 0;
     }
 
-    .hero-image {
-        height: 300px;
+    10% {
+        opacity: 1;
+    }
+
+    25% {
+        transform: translate3d(10%, 120px, 0) scale(0.85) rotate(-8deg);
+        opacity: 1;
+    }
+
+    50% {
+        transform: translate3d(38%, 70px, 0) scale(1) rotate(-3deg);
+        opacity: 1;
+    }
+
+    75% {
+        transform: translate3d(68%, 110px, 0) scale(0.9) rotate(4deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate3d(105%, 40px, 0) scale(0.65) rotate(10deg);
+        opacity: 0;
+    }
+}
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .hero-3d.animate,
+    .hero-3d {
+        animation: none !important;
+        transition: none !important;
+        opacity: 1;
+        transform: none;
+        display: none; /* hide to avoid motion for sensitive users; change to block if you prefer a static fallback */
     }
 }

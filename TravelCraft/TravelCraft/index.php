@@ -19,11 +19,24 @@
             </div>
 
             <div class="col-lg-6">
-                <img
-                    src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
-                    alt="Strandurlaub"
-                    class="img-fluid hero-image"
-                >
+                <div class="hero-media" style="position: relative;">
+                    <img
+                        src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
+                        alt="Strandurlaub"
+                        class="img-fluid hero-image"
+                    >
+
+                    <!-- 3D model flies in and out above the image -->
+                    <model-viewer
+                        id="hero-model"
+                        class="hero-3d"
+                        src="assets/models/ace_combat_7_b-52h_stratofortress.glb"
+                        alt="3D Modell"
+                        camera-controls
+                        exposure="1"
+                        interaction-prompt="none"
+                        ></model-viewer>
+                </div>
             </div>
         </div>
     </div>
@@ -124,5 +137,19 @@
         </div>
     </div>
 </section>
+
+<!-- load model-viewer only on the homepage where we use it -->
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    const model = document.getElementById('hero-model');
+    if (!model) return;
+
+    // Use a single animate class that triggers the CSS keyframe path.
+    // Small delay so the page paints first.
+    setTimeout(() => model.classList.add('animate'), 180);
+
+    
+</script>
 
 <?php include 'includes/footer.php'; ?>

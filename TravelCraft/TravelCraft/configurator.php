@@ -197,11 +197,12 @@ include 'includes/header.php';
     .extra-card { cursor: pointer; border: 2px solid #f0f0f0; border-radius: 10px; transition: 0.2s; }
     .extra-card:hover { border-color: #0d6efd; background: #f8fbff; }
     .extra-checkbox:checked + .extra-label-box { border-color: #0d6efd; background: #e7f1ff; }
-    .preview-window { position: relative; width: 100%; height: 300px; border-radius: 20px; overflow: hidden; background: #222; box-shadow: inset 0 0 50px rgba(0,0,0,0.5); }
-    .layer { position: absolute; width: 100%; height: 100%; top: 0; left: 0; transition: opacity 0.5s ease; }
-    #layer-bg { object-fit: cover; z-index: 1; }
-    #layer-acc { object-fit: contain; z-index: 2; }
-    #layer-trans { object-fit: contain; z-index: 3; }
+    .preview-window { position: relative; width: 100%; height: 300px;  border-radius: 20px; overflow: hidden; background: #222; box-shadow: inset 0 0 50px rgba(0,0,0,0.5); }
+    .layer { position: absolute; width: 100%; height: 100%; top: 0; left: 0; transition: opacity 0.5s ease; background-size: cover; background-position: center center; }
+    #layer-bg { z-index: 1; }
+    #layer-acc { z-index: 2; }
+    #layer-trans { z-index: 3; }
+    #preview-placeholder { position: absolute; inset: 0; display:flex; align-items:center; justify-content:center; z-index:4; }
     .price-tag { font-size: 2.5rem; font-weight: 800; color: #0d6efd; }
 </style>
 
@@ -231,6 +232,7 @@ include 'includes/header.php';
                         </select>
                     </div>
 
+<!-- ab hier die Checkboxen für sommer/winter/flexibel -->
                     <div class="p-3 rounded-4 mb-4" style="background: #f1f5f9;">
                         <div class="d-flex gap-4 mb-3 justify-content-center">
                             <div class="form-check">
@@ -307,16 +309,31 @@ include 'includes/header.php';
         </div>
 
         <div class="col-lg-5">
-    <div class="sticky-top" style="top: 20px;">
+<!-- //der bereich wo das flugzeug mal war -->
+    <div class="sticky-top" style="top: 20px;"> 
         <div class="card config-card shadow-lg p-4">
             <h5 class="text-center mb-3 fw-bold text-muted text-uppercase">Deine Reise-Vorschau</h5>
             
+            <div class="preview-window mb-4"
+             style="height: 300px; background: #f5f5f5; position: relative;">
+                <!-- Layered preview: background / accommodation / transport -->
+                <div id="layer-bg" class="layer" aria-hidden="true"></div>
+                <div id="layer-mid" class="layer" aria-hidden="true"></div>
+                <div id="layer-fg" class="layer" aria-hidden="true"></div>
             <div class="preview-window mb-4">
-                <img id="layer-bg" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800" class="layer">
-                <img id="layer-acc" src="" class="layer" style="display:none;">
-                <img id="layer-trans" src="" class="layer" style="display:none;">
+
+             <!-- <img id="layer-bg"
+                 src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
+                class="layer"> -->
+
+            <img id="layer-acc" class="layer" style="display:none;">
+                 <img id="layer-trans" class="layer" style="display:none;">
+
+            </div>
+            
             </div>
 
+            <!-- rechts was da steht -->
             <div class="mt-4 border-top pt-3">
                 <div class="d-flex justify-content-between mb-2">
                     <span class="text-muted">Ziel:</span>
@@ -341,7 +358,7 @@ include 'includes/header.php';
     </div>
 </div>
                 <hr>
-                
+                <!-- das ist der rechte bereich wo unsere extras sind -->
                 <p class="small fw-bold text-muted mb-2">Ausgewählte Extras:</p>
                 <div id="extra-badges" class="d-flex flex-wrap gap-1 mb-3">
                     <small class="text-muted italic">Noch keine Extras gewählt</small>
@@ -368,4 +385,69 @@ include 'includes/header.php';
 </script>
 
 <!-- NIMMT DATEN AUS Configurator.js -->
+ <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 <script src="assets/js/configurator.js"></script>
+
+<script type="module">
+  import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+  import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+  import { GLTFLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
+
+  const container = document.getElementById('plane3d');
+
+  if (container) {
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xf5f5f5);
+
+    const camera = new THREE.PerspectiveCamera(
+      45,
+      container.clientWidth / container.clientHeight,
+      0.1,
+      1000
+    );
+    camera.position.set(0, 2, 6);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    container.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    directionalLight.position.set(5, 10, 7);
+    scene.add(directionalLight);
+
+    const loader = new GLTFLoader();
+    loader.load(
+      './assets/models/ace_combat_7_b-52h_stratofortress.glb',
+      function (gltf) {
+        const model = gltf.scene;
+        model.scale.set(1, 1, 1);
+        model.position.set(0, 0, 0);
+        scene.add(model);
+      },
+      undefined,
+      function (error) {
+        console.error('Fehler beim Laden des 3D-Modells:', error);
+      }
+    );
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+  }
+</script>

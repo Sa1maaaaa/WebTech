@@ -44,7 +44,7 @@ include 'includes/header.php';
                     <h4><?= htmlspecialchars($trip['destination']) ?></h4>
 
 <p><strong>Unterkunft:</strong> <?= htmlspecialchars($trip['accommodation']) ?></p>
-<p><strong>Extras:</strong> <?= htmlspecialchars($trip['extras']) ?: 'Keine' ?></p>
+<!-- <p><strong>Extras:</strong> <?= htmlspecialchars($trip['extras']) ?: 'Keine' ?></p> -->
 <p><strong>Tage:</strong> <?= htmlspecialchars($trip['travel_days']) ?></p>
 <p><strong>Preis:</strong> <?= htmlspecialchars($trip['total_price']) ?> €</p>
 

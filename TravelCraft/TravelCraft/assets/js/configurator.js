@@ -32,12 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
                  "Trocknernutzung", "Waschmaschinennutzung",
                  "Spind", "Fahrradverleih", "Dachterrasse Zugang", "Spieleabend", 
                  "Steckdose am Bett", "Leselampe am Bett",  "Gepäckaufbewahrung", "24h Rezeption"],
-            "strand":[ "Strandliegen", "Meerblick"],
             "winter": ["Ski-Pass", "Kamin", "Winterreifen"],
             "warm": ["Sonnenliegen", "Klimaanlage"],
             "cold": ["Heizung Plus", "Winter-Check"]
         },
-        // optionale Preis-/Faktorzuordnung für Extras (falls gewünscht unterschiedliche Preise)
         extraPrices: {
             "Jetski": 60,
             "Strandliegen": 10,
@@ -50,22 +48,37 @@ document.addEventListener('DOMContentLoaded', () => {
             "Heizung Plus": 12,
             "Winter-Check": 30
         },
-        bilder: {
-            "strand": "assets/img/bg-beach.jpg",
-            "stadt": "assets/img/bg-city.jpg",
-            "laendlich": "assets/img/bg-country.jpg",
-            "hotel": "assets/img/hotel-layer.png",
-            "villa": "assets/img/villa-layer.png",
-            "camping-van": "assets/img/van-layer.png",
-            "flugzeug": "assets/img/plane-cloud.png",
-            "auto": "assets/img/car-layer.png",
-            "zug": "assets/img/train-layer.png"
+        countryImages: {
+           "Spanien": "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&w=1200&q=80",
+        "Italien": "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?auto=format&fit=crop&w=1400&q=80",
+        "Thailand": "https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?auto=format&fit=crop&w=1200&q=80",
+        "Türkei": "https://images.unsplash.com/photo-1596436889106-be35e843f974?auto=format&fit=crop&w=1200&q=80",
+        "Ägypten": "https://images.unsplash.com/photo-1539650116574-75c0c6d73f8e?auto=format&fit=crop&w=1400&q=80",
+        "Schweiz": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
+        "Arabische-Emirate": "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1200&q=80",
+        "Kroatien": "https://images.unsplash.com/photo-1555992336-03a23c4a9b9b?auto=format&fit=crop&w=1400&q=80",
+        "Griechenland": "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=1400&q=80",
+        "Frankreich": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1200&q=80",
+        "Mauritius": "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1200&q=80",
+        "USA": "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1400&q=80",
+        "Südafrika": "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=1200&q=80",
+        "Portugal": "https://images.unsplash.com/photo-1504470695779-75300268aa8f?auto=format&fit=crop&w=1600&q=80",
+        "Österreich": "https://images.unsplash.com/photo-1665945203723-d823de195bf4?auto=format&fit=crop&fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&q=80&w=1600",
+        "Marokko": "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1400&q=80",
+        "Vietnam": "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80",
+        "Mexiko": "https://images.unsplash.com/photo-1510097467424-192d713fd8b2?auto=format&fit=crop&w=1400&q=80",
+        "Albanien": "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=1200&q=80",
+        "Japan": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1200&q=80",
+        "Island": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=80",
+        "Norwegen": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+        "Australien": "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=1200&q=80",
+        "Brasilien": "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?auto=format&fit=crop&w=1200&q=80",
+        "Kanada": "https://images.unsplash.com/photo-1503614472-8c93d56e92ce?auto=format&fit=crop&w=1200&q=80"
         }
     };
 
-    // Debug: prüfe, ob serverseitig die erwarteten Daten zur Verfügung gestellt wurden
-    if (typeof cityData !== 'object' || cityData === null) console.warn('cityData ist nicht definiert oder kein Objekt. JS-Funktionen mit Städten können fehlschlagen.');
-    if (typeof allDestinations !== 'object' || allDestinations === null) console.warn('allDestinations ist nicht definiert oder kein Objekt. Die Suche kann nicht arbeiten.');
+    if (typeof cityData !== 'object' || cityData === null) console.warn('cityData ist nicht definiert oder kein Objekt.');
+    if (typeof allDestinations !== 'object' || allDestinations === null) console.warn('allDestinations ist nicht definiert oder kein Objekt.');
 
     // --- 2. Element-Selektoren ---
     const destSelect = document.getElementById('destination');
@@ -77,7 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const daysInput = document.getElementById('travel_days');
     const couponInput = document.getElementById('coupon_code');
     const travelInput = document.getElementById('travel_start');
-    // optional: number of people input (falls vorhanden)
     const peopleInput = document.getElementById('people_count') || document.getElementById('persons') || null;
 
     if (!destSelect || !citySelect || !searchInput) {
@@ -93,15 +105,22 @@ document.addEventListener('DOMContentLoaded', () => {
         catch (e) { return (s || '').toLowerCase(); }
     };
 
-    // Berechnet den Preis eines Extras abhängig von Basispreis und Faktoren
+    function getSelectedDatasetValue(selectEl, key) {
+        if (!selectEl) return undefined;
+        const idx = selectEl.selectedIndex;
+        if (typeof idx === 'number' && selectEl.options && selectEl.options[idx]) {
+            const opt = selectEl.options[idx];
+            return opt.dataset ? opt.dataset[key] : undefined;
+        }
+        const opt = selectEl.selectedOptions && selectEl.selectedOptions[0];
+        return opt && opt.dataset ? opt.dataset[key] : undefined;
+    }
+
     function computeExtraPrice(extraName) {
         const base = (konfiguration.extraPrices && konfiguration.extraPrices[extraName]) ? konfiguration.extraPrices[extraName] : 20;
-        const countryFactor = parseFloat(destSelect.options[destSelect.selectedIndex]?.dataset.factor || 1);
-        const cityFactor = parseFloat(citySelect.options[citySelect.selectedIndex]?.dataset.factor || 1);
-        // Unterkunft kann entweder einen Preis oder einen Faktor in data-factor haben
-        const accFactor = parseFloat(accSelect?.selectedOptions?.[0]?.dataset?.factor || 1);
-
-        // Endpreis: Basis * Faktoren (gerundet auf ganze Euro, keine Nachkommastellen für Extras-Anzeige)
+        const countryFactor = parseFloat(getSelectedDatasetValue(destSelect, 'factor') || 1);
+        const cityFactor = parseFloat(getSelectedDatasetValue(citySelect, 'factor') || 1);
+        const accFactor = parseFloat(getSelectedDatasetValue(accSelect, 'factor') || 1);
         const raw = base * countryFactor * cityFactor * accFactor;
         return Math.round(raw);
     }
@@ -109,36 +128,31 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 4. Kern-Logik Funktionen ---
 
     function updateAll() {
-        const selDest = destSelect.options[destSelect.selectedIndex];
+        const selIndex = destSelect.selectedIndex;
+        const selDest = (typeof selIndex === 'number' && destSelect.options && destSelect.options[selIndex]) ? destSelect.options[selIndex] : null;
         if (!selDest || selDest.value === "") return;
 
         const countryFactor = parseFloat(selDest.dataset.factor || 1);
-        const cityFactor = parseFloat(citySelect.options[citySelect.selectedIndex]?.dataset.factor || 1);
+        const cityFactor = parseFloat(getSelectedDatasetValue(citySelect, 'factor') || 1);
         const climateVal = getClimate();
 
         let seasonFactor = 1.0;
         if (climateVal === 'warm') seasonFactor = 1.25;
         if (climateVal === 'flexible') seasonFactor = 1.1;
 
-        const baseAcc = parseFloat(accSelect?.selectedOptions?.[0]?.dataset?.price || 0);
-        const baseTrans = parseFloat(transSelect?.selectedOptions?.[0]?.dataset?.price || 0);
+        const baseAcc = parseFloat(getSelectedDatasetValue(accSelect, 'price') || 0);
+        const baseTrans = parseFloat(getSelectedDatasetValue(transSelect, 'price') || 0);
         const days = parseInt(daysInput?.value) || 1;
 
-        // Komponenten pro Person
         const finalTrans = baseTrans * countryFactor * cityFactor * seasonFactor;
         const finalAcc = (baseAcc * days) * countryFactor * cityFactor * seasonFactor;
 
-        // Extras pro Person (summe der angehakten extras' data-price)
         const extrasPerPerson = Array.from(document.querySelectorAll('.extra-checkbox:checked')).reduce((s, cb) => s + parseFloat(cb.dataset.price || 0), 0);
 
-        // Preis pro Person (vor Rabatt)
         let pricePerPerson = finalTrans + finalAcc + extrasPerPerson;
         if ((couponInput?.value || "").toUpperCase() === 'SUMMER10') pricePerPerson *= 0.9;
 
-        // Anzahl Personen (mindestens 1)
         const people = Math.max(1, parseInt(peopleInput?.value) || 1);
-
-        // Gesamtpreis = Preis pro Person * Anzahl Personen
         const total = pricePerPerson * people;
 
         // UI Updates
@@ -147,29 +161,26 @@ document.addEventListener('DOMContentLoaded', () => {
         if(document.getElementById('res-price-trans')) document.getElementById('res-price-trans').innerText = finalTrans.toFixed(2).replace('.', ',') + " € / Person";
         if(document.getElementById('res-price-acc')) document.getElementById('res-price-acc').innerText = finalAcc.toFixed(2).replace('.', ',') + " € / Person";
 
-        // Anzeige: wenn separate Elemente für Per-Person und Gesamt existieren, fülle diese,
-        // sonst aktualisiere das bestehende #res-price mit beidem.
         const perPersonEl = document.getElementById('res-price-per-person');
         const totalEl = document.getElementById('res-price-total');
-        // Always update per-person element if present
+        
         if (perPersonEl) {
             perPersonEl.innerText = Math.round(pricePerPerson) + " € / Person";
         }
-        // Update small total if present
         if (totalEl) {
             totalEl.innerText = total.toFixed(2).replace('.', ',') + " €";
         }
-        // set big price to total as well
+        
         const bigPriceEl = document.getElementById('res-price');
         if (bigPriceEl) {
             bigPriceEl.innerText = total.toFixed(2).replace('.', ',') + " €";
             bigPriceEl.classList.add('text-primary');
         }
         
-        // update hidden total input for form submission
         const totalInput = document.getElementById('total_price_input');
         if (totalInput) totalInput.value = total.toFixed(2);
-        // Update preview: show selected extras in the preview area (#extra-badges)
+
+        // Update extra badges
         try {
             const badges = document.getElementById('extra-badges');
             if (badges) {
@@ -196,29 +207,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateExtras() {
         const container = document.getElementById('extras-container') || document.getElementById('extra-badges');
-      if (!container) {
-           console.warn('Kein Extras-Container im DOM gefunden.');
-           return;
-      }
+        if (!container) {
+            console.warn('Kein Extras-Container im DOM gefunden.');
+            return;
+        }
 
-    const accValue = accSelect?.value?.toLowerCase() || '';
+        const accValue = accSelect?.value?.toLowerCase() || '';
+        const climateVal = getClimate();
+        const cityText = citySelect.options[citySelect.selectedIndex]?.text || "";
 
-    // Debug: show current acc/climate for troubleshooting
-    try { console.log('updateExtras', { accValue, climate: getClimate(), cityText }); } catch(e) {}
+        let list = [
+            ...(konfiguration.extras[climateVal] || [])
+        ];
 
-    const climateVal = getClimate();
-    const cityText = citySelect.options[citySelect.selectedIndex]?.text || "";
-
-    // Kombiniere Extras: Klima-Extras immer zeigen, zusätzlich Unterkunfts-Extras und Strand-Extras
-    let list = [
-        ...(konfiguration.extras[climateVal] || [])
-    ];
-
-    // Unterkunfts-Extras hinzufügen, falls vorhanden
-    if (accValue) list.push(...(konfiguration.extras[accValue] || []));
-
-    // Strand-spezifische Extras hinzufügen, falls Stadt ein Strand ist
-    if (cityText.includes("Strand")) list.push(...(konfiguration.extras["strand"] || []));
+        if (accValue) list.push(...(konfiguration.extras[accValue] || []));
+        if (cityText.includes("Strand")) list.push(...(konfiguration.extras["strand"] || []));
 
         const uniqueExtras = [...new Set(list)];
 
@@ -226,14 +229,22 @@ document.addEventListener('DOMContentLoaded', () => {
         uniqueExtras.forEach(extra => {
             const price = computeExtraPrice(extra);
             const div = document.createElement('div');
-            div.innerHTML = `
-                <label>
-                    <input type="checkbox" class="extra-checkbox" data-price="${price}" value="${extra}"> 
-                    ${extra} (+${price} €)
-                </label>`;
+            div.className = 'col-12';
+            const label = document.createElement('label');
+            label.innerHTML = ` <input type="checkbox" name="extras[]" class="extra-checkbox" /> `;
+            label.className = 'd-flex align-items-center gap-2';
+            const input = label.querySelector('input.extra-checkbox');
+            input.value = extra;
+            input.dataset.price = price;
+            const span = document.createElement('span');
+            span.className = 'extra-label';
+            span.textContent = `${extra} (+${price} €)`;
+            label.appendChild(span);
+            div.appendChild(label);
             container.appendChild(div);
         });
 
+        // 🔧 FIX: Attach event listeners to newly created checkboxes
         container.querySelectorAll('.extra-checkbox').forEach(cb => {
             cb.addEventListener('change', updateAll);
         });
@@ -243,34 +254,46 @@ document.addEventListener('DOMContentLoaded', () => {
         const layerBg = document.getElementById('layer-bg');
         const layerMid = document.getElementById('layer-mid');
         const layerFg = document.getElementById('layer-fg');
+        const placeholder = document.getElementById('preview-placeholder');
 
         const cityText = citySelect.options[citySelect.selectedIndex]?.text || "";
-        const accValue = accSelect.value.toLowerCase();
-        const transValue = transSelect.value.toLowerCase();
+        const accValue = accSelect?.value?.toLowerCase() || '';
+        const transValue = transSelect?.value?.toLowerCase() || '';
 
-        // Hintergrund
         if (layerBg) {
-            let bgKey = "laendlich";
-            if (cityText.includes("Strand")) bgKey = "strand";
-            if (cityText.includes("Stadt")) bgKey = "stadt";
-            layerBg.style.backgroundImage = `url('${konfiguration.bilder[bgKey]}')`;
+            let img = '';
+            const countryKey = destSelect?.value;
+            if (countryKey && konfiguration.countryImages && konfiguration.countryImages[countryKey]) {
+                img = konfiguration.countryImages[countryKey];
+            } else {
+                let bgKey = "laendlich";
+                if (cityText.includes("Strand")) bgKey = "strand";
+                if (cityText.includes("Stadt")) bgKey = "stadt";
+                img = konfiguration.bilder?.[bgKey] || '';
+            }
+            if (img) layerBg.style.backgroundImage = `url('${img}')`;
+            else layerBg.style.backgroundImage = 'none';
         }
 
-        // Unterkunft
         if (layerMid) {
-            const img = konfiguration.bilder[accValue] || "";
+            const img = konfiguration.bilder?.[accValue] || "";
             layerMid.style.backgroundImage = img ? `url('${img}')` : "none";
         }
 
-        // Transport
         if (layerFg) {
             let fgKey = "";
             if (transValue.includes("flug")) fgKey = "flugzeug";
             else if (transValue.includes("auto")) fgKey = "auto";
             else if (transValue.includes("zug")) fgKey = "zug";
-            
-            layerFg.style.backgroundImage = fgKey ? `url('${konfiguration.bilder[fgKey]}')` : "none";
+            layerFg.style.backgroundImage = fgKey ? `url('${konfiguration.bilder?.[fgKey]}')` : "none";
         }
+
+        try {
+            if (placeholder) {
+                if (destSelect && destSelect.value) placeholder.style.display = 'none';
+                else placeholder.style.display = 'flex';
+            }
+        } catch (e) { /* ignore */ }
     }
 
     function updateCities() {
@@ -292,6 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSeason();
         updateExtras();
         updatePreviewScene();
+        updateAll();
     }
 
     function updateSeason() {
@@ -326,7 +350,6 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput.addEventListener('input', function() {
         const raw = this.value || "";
         const term = normalize(raw.trim());
-        console.log('search input', { raw, term });
         destSelect.innerHTML = '<option value="">-- Ziel wählen --</option>';
         let matches = 0, lastMatch = "";
 
@@ -357,15 +380,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // extra debug: zeige Quartal-Status beim Season-Update
-    const origUpdateSeason = updateSeason;
-    updateSeason = function() {
-        const climateVal = getClimate();
-        console.log('updateSeason start', { quarterSelectExists: !!quarterSelect, climateVal, country: destSelect.value });
-        origUpdateSeason();
-        console.log('updateSeason done', { quarterOptions: quarterSelect ? Array.from(quarterSelect.options).map(o => o.value) : null });
-    }
-
     destSelect.addEventListener('change', updateCities);
     
     citySelect.addEventListener('change', () => {
@@ -374,23 +388,30 @@ document.addEventListener('DOMContentLoaded', () => {
         updateAll();
     });
 
-    travelInput && travelInput.addEventListener('change', function() {
-        if (!this.value) return;
-        const m = new Date(this.value).getMonth() + 1;
-        let q = (m <= 3) ? "Q1" : (m <= 6) ? "Q2" : (m <= 9) ? "Q3" : "Q4";
-        const exists = Array.from((quarterSelect?.options || [])).some(o => o.value === q);
-        if (exists) quarterSelect.value = q;
-        updateAll();
-    });
+    // 🔧 FIX: Add event listener for travel date input
+    if (travelInput) {
+        travelInput.addEventListener('change', function() {
+            if (!this.value) return;
+            const m = new Date(this.value).getMonth() + 1;
+            let q = (m <= 3) ? "Q1" : (m <= 6) ? "Q2" : (m <= 9) ? "Q3" : "Q4";
+            const exists = Array.from((quarterSelect?.options || [])).some(o => o.value === q);
+            if (exists) quarterSelect.value = q;
+            updateAll();
+        });
+    }
 
-    quarterSelect && quarterSelect.addEventListener('change', function() {
-        const year = new Date().getFullYear();
-        const qStarts = {'Q1':'-01-01','Q2':'-04-01','Q3':'-07-01','Q4':'-10-01'};
-        if (qStarts[this.value] && travelInput) travelInput.value = year + qStarts[this.value];
-        updateAll();
-    });
+    // 🔧 FIX: Add event listener for quarter select
+    if (quarterSelect) {
+        quarterSelect.addEventListener('change', function() {
+            const year = new Date().getFullYear();
+            const qStarts = {'Q1':'-01-01','Q2':'-04-01','Q3':'-07-01','Q4':'-10-01'};
+            if (qStarts[this.value] && travelInput) travelInput.value = year + qStarts[this.value];
+            updateAll();
+        });
+    }
 
-    [accSelect, transSelect, daysInput, couponInput].forEach(el => {
+    // 🔧 FIX: Ensure all select elements trigger updateAll on change
+    [accSelect, transSelect].forEach(el => {
         if (el) {
             el.addEventListener('change', () => {
                 updateExtras();
@@ -400,15 +421,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    if (peopleInput) {
-        peopleInput.addEventListener('input', updateAll);
+    // 🔧 FIX: Add event listeners for days and coupon inputs with proper event types
+    if (daysInput) {
+        daysInput.addEventListener('input', updateAll);
+        daysInput.addEventListener('change', updateAll);
     }
 
+    if (couponInput) {
+        couponInput.addEventListener('input', updateAll);
+        couponInput.addEventListener('change', updateAll);
+        couponInput.addEventListener('blur', updateAll);
+    }
+
+    if (peopleInput) {
+        peopleInput.addEventListener('input', updateAll);
+        peopleInput.addEventListener('change', updateAll);
+    }
+
+    // 🔧 FIX: Climate radio buttons - ensure updateAll is called
     document.querySelectorAll('.climate-radio').forEach(r => {
         r.addEventListener('change', () => {
             updateSeason();
             updateExtras();
             updatePreviewScene();
+            updateAll();
         });
     });
 
